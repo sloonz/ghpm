@@ -1,0 +1,14 @@
+name: kcl-language-server
+source:
+  kind: github
+  repo: kcl-lang/kcl
+install:
+  - type: extract
+    from:
+      type: asset
+      name: kclvm-{version}-{os}-{arch}.tar.gz
+    targetDir: /usr/local/bin
+    stripComponents: 2
+    pick:
+      - kcl-language-server
+  

@@ -1,0 +1,31 @@
+name: k3s
+source:
+  kind: github
+  repo: k3s-io/k3s
+
+install:
+  - type: asset
+    name: k3s
+    target: /usr/local/bin/k3s
+    mode: "0755"
+
+  - type: symlink
+    target: /usr/local/bin/kubectl
+    to: k3s
+
+  - type: symlink
+    target: /usr/local/bin/ctr
+    to: k3s
+
+  - type: symlink
+    target: /usr/local/bin/crictl
+    to: k3s
+
+  - type: url
+    url: https://raw.githubusercontent.com/k3s-io/k3s/refs/heads/main/k3s.service
+    target: /etc/systemd/system/k3s.service
+    mode: "0644"
+
+postInstall:
+  - systemctl daemon-reload
+

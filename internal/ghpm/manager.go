@@ -53,7 +53,7 @@ func (m *Manager) CacheDir() string {
 }
 
 func (m *Manager) lock() error {
-	lockPath := filepath.Join(m.Root, "/var/lock/ghpm.lock")
+	lockPath := filepath.Join(m.Root, "var/lock/ghpm.lock")
 	if err := os.MkdirAll(filepath.Dir(lockPath), 0o755); err != nil {
 		return err
 	}

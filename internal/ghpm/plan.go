@@ -104,6 +104,8 @@ func (m *Manager) buildPlan(mf manifest.Manifest, release source.Release, ctx ma
 			})
 		case "asset":
 			action := *act.Asset
+			action.Name = manifest.ExpandTemplate(action.Name, ctx)
+			action.Pattern = manifest.ExpandTemplate(action.Pattern, ctx)
 			asset, err := source.SelectAsset(release, action)
 			if err != nil {
 				return plan{}, nil, err

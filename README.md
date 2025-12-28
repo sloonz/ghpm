@@ -40,6 +40,8 @@ ghpm install --all
 ghpm remove <name> [--purge]
 ghpm upgrade <name>
 ghpm upgrade --all [--dry-run]
+ghpm self [--version <v>]
+ghpm version
 ```
 
 ## Manifest format

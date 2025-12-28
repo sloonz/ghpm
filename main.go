@@ -264,7 +264,44 @@ func main() {
 	upgradeCmd.Flags().BoolVar(&upgradeAll, "all", false, "upgrade all")
 	upgradeCmd.Flags().BoolVar(&upgradeDryRun, "dry-run", false, "check for upgrades")
 
-	rootCmd.AddCommand(listCmd, statusCmd, installCmd, removeCmd, upgradeCmd)
+	var selfVersion string
+	selfCmd := &cobra.Command{
+		Use:   "self",
+		Short: "Register ghpm itself",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			manager, _, err := buildManager()
+			if err != nil {
+				return err
+			}
+			receipt, err := manager.Self(ghpm.SelfOptions{Version: selfVersion})
+			if err != nil {
+				return err
+			}
+			if jsonOut {
+				writeJSON(receipt)
+				return nil
+			}
+			fmt.Printf("registered %s %s\n", receipt.Name, receipt.Source.Tag)
+			return nil
+		},
+	}
+	selfCmd.Flags().StringVar(&selfVersion, "version", "", "version/tag")
+
+	versionCmd := &cobra.Command{
+		Use:   "version",
+		Short: "Show ghpm version",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			info := ghpm.BuildInfo()
+			if jsonOut {
+				writeJSON(info)
+				return nil
+			}
+			fmt.Printf("ghpm %s\n", info.Version)
+			return nil
+		},
+	}
+
+	rootCmd.AddCommand(listCmd, statusCmd, installCmd, removeCmd, upgradeCmd, selfCmd, versionCmd)
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintln(os.Stderr, err)

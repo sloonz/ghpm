@@ -43,7 +43,7 @@ func TestPackageCommands(t *testing.T) {
 				if err := os.MkdirAll(dir, 0755); err != nil {
 					t.Fatal(err)
 				}
-				manifest := "name: " + name + "\ninstall:\n  - type: mkdir\n    path: /opt/" + name + "\n"
+				manifest := "install:\n  - type: mkdir\n    path: /opt/" + name + "\n"
 				if err := os.WriteFile(filepath.Join(dir, "package.yaml"), []byte(manifest), 0644); err != nil {
 					t.Fatal(err)
 				}

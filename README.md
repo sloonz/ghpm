@@ -51,10 +51,9 @@ packages; explicitly naming an uninstalled package is an error.
 
 ## Manifest format
 
-Example `package.yaml`:
+Example `/var/lib/ghpm/packages/k3s/package.yaml`:
 
 ```yaml
-name: k3s
 description: Lightweight Kubernetes
 source:
   kind: github

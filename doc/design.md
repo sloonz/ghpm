@@ -112,7 +112,6 @@ Use YAML with a stable schema version.
 ### Top-level structure
 
 ```yaml
-name: k3s
 description: Lightweight Kubernetes
 source:
   kind: github
@@ -421,7 +420,6 @@ Also pluggable:
 ## 15) Example: k3s manifest (adapted to the schema)
 
 ```yaml
-name: k3s
 source:
   kind: github
   repo: k3s-io/k3s

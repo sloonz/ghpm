@@ -1,4 +1,3 @@
-name: k3s
 source:
   kind: github
   repo: k3s-io/k3s

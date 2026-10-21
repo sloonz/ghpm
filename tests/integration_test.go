@@ -228,8 +228,7 @@ func assertOnlyFiles(t *testing.T, root string, expected []string) {
 }
 
 func rawManifest() string {
-	return `name: ghpm-raw
-description: ghpm raw binary install test
+	return `description: ghpm raw binary install test
 source:
   kind: github
   repo: sloonz/ghpm
@@ -242,8 +241,7 @@ install:
 }
 
 func archiveManifest() string {
-	return `name: ghpm-archive
-description: ghpm archive install test
+	return `description: ghpm archive install test
 source:
   kind: github
   repo: sloonz/ghpm

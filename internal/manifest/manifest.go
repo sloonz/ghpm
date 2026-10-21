@@ -12,7 +12,7 @@ import (
 )
 
 type Manifest struct {
-	Name        string   `yaml:"name"`
+	Name        string   `yaml:"-"`
 	Description string   `yaml:"description"`
 	Source      Source   `yaml:"source"`
 	Install     []Action `yaml:"install"`
@@ -98,9 +98,7 @@ func Load(path string) (Manifest, error) {
 		return Manifest{}, fmt.Errorf("%s: %w", path, err)
 	}
 	m.Path = path
-	if m.Name == "" {
-		m.Name = filepath.Base(filepath.Dir(path))
-	}
+	m.Name = filepath.Base(filepath.Dir(path))
 	if err := m.Validate(); err != nil {
 		return Manifest{}, fmt.Errorf("%s: %w", path, err)
 	}
@@ -113,7 +111,7 @@ func (m Manifest) PackageDir() string {
 
 func (m Manifest) Validate() error {
 	if m.Name == "" {
-		return errors.New("manifest name is required")
+		return errors.New("package directory name is required")
 	}
 	for i, action := range m.Install {
 		if action.Type == "" {

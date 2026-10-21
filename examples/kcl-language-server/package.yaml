@@ -1,4 +1,3 @@
-name: kcl-language-server
 source:
   kind: github
   repo: kcl-lang/kcl

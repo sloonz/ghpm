@@ -41,7 +41,7 @@ func TestInstallRejectsEmptyExtraction(t *testing.T) {
 				archive := "archive." + format
 				writeTestArchive(t, filepath.Join(dir, archive), format, tc.entries)
 				// An earlier action must not run if a later extraction is invalid.
-				yaml := fmt.Sprintf("name: test\ninstall:\n  - type: mkdir\n    path: /earlier\n  - type: extract\n    from:\n      type: file\n      path: %s\n    targetDir: /out\n%s", archive, tc.options)
+				yaml := fmt.Sprintf("install:\n  - type: mkdir\n    path: /earlier\n  - type: extract\n    from:\n      type: file\n      path: %s\n    targetDir: /out\n%s", archive, tc.options)
 				if err := os.WriteFile(filepath.Join(dir, "package.yaml"), []byte(yaml), 0644); err != nil {
 					t.Fatal(err)
 				}

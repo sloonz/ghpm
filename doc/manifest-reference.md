@@ -5,8 +5,9 @@ how to fetch and install a tool.
 
 ## Minimal example
 
+For `/var/lib/ghpm/packages/k3s/package.yaml`:
+
 ```yaml
-name: k3s
 description: Lightweight Kubernetes
 source:
   kind: github
@@ -20,7 +21,6 @@ install:
 
 ## Top-level fields
 
-- `name` (string, required): Package name.
 - `description` (string, optional): Short description.
 - `source` (object, optional): Where releases/assets come from.
 - `install` (list, required): Ordered list of install actions.
@@ -141,7 +141,6 @@ is used.
 ## Example with systemd
 
 ```yaml
-name: k3s
 source:
   kind: github
   repo: k3s-io/k3s

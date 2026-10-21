@@ -91,8 +91,7 @@ func (m *Manager) ensureSelfManifest(execPath string, perm os.FileMode) error {
 		return err
 	}
 
-	manifest := fmt.Sprintf(`name: ghpm
-description: ghpm package manager
+	manifest := fmt.Sprintf(`description: ghpm package manager
 source:
   kind: github
   repo: sloonz/ghpm

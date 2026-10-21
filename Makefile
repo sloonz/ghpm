@@ -1,4 +1,4 @@
-.PHONY: build release-dry-run test-integration
+.PHONY: build release-dry-run test
 
 BIN ?= ghpm
 BUILD_PKG ?= .
@@ -10,5 +10,5 @@ build:
 release-dry-run:
 	$(GORELEASER) release --clean --snapshot --skip=publish
 
-test-integration:
-	go test -tags=integration ./tests
+test:
+	go test -tags=integration ./...

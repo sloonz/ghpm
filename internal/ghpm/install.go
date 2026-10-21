@@ -477,6 +477,7 @@ func (m *Manager) runHooks(commands []string) {
 			continue
 		}
 		c := exec.Command("/bin/sh", "-c", cmd)
+		c.Env = append(os.Environ(), "GHPM_ROOT="+filepath.Clean(m.Root))
 		_ = c.Run()
 	}
 }

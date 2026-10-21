@@ -27,6 +27,17 @@ install:
 - `postInstall` (list, optional): Shell commands to run after install.
 - `postRemove` (list, optional): Shell commands to run after remove.
 
+`postInstall` commands run through `/bin/sh` with `GHPM_ROOT` set to the
+installation root (`--root`, default `/`). Quote paths containing this variable:
+
+```yaml
+postInstall:
+  - chmod 0755 "$GHPM_ROOT/usr/local/bin/wstunnel"
+```
+
+This also works with `extract`, which preserves archive permissions and does not
+support a `mode` override.
+
 ## Source
 
 ```yaml

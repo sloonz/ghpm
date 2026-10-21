@@ -8,7 +8,7 @@ This project was implemented by GPT-5.2-Codex.
 ## Build
 
 ```bash
-go build ./cmd/ghpm
+go build .
 ```
 
 ## Configuration

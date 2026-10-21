@@ -207,6 +207,9 @@ func (m *Manager) buildExtractPlan(mf manifest.Manifest, action manifest.Extract
 	if err != nil {
 		return plan{}, "", nil, err
 	}
+	if len(files) == 0 {
+		return plan{}, "", nil, fmt.Errorf("extract %s: no files selected; check stripComponents, pick, and omit", formatHint(hintName, sourcePath))
+	}
 	for _, name := range files {
 		target := filepath.Join(targetDir, name)
 		pl.targets = append(pl.targets, target)

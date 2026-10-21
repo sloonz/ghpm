@@ -100,7 +100,8 @@ Create a symlink.
 
 ### `extract`
 
-Extract an archive into a target directory.
+Extract an archive into a target directory. Installation fails if no files remain
+after applying `stripComponents`, `pick`, and `omit`.
 
 ```yaml
 - type: extract

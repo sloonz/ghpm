@@ -211,8 +211,7 @@ func (m *Manager) Upgrade(name string, opts InstallOptions) (bool, state.Receipt
 	}
 	entry, ok := installed.Installed[name]
 	if !ok {
-		receipt, err := m.Install(name, opts)
-		return true, receipt, err
+		return false, state.Receipt{}, fmt.Errorf("package %q is not installed", name)
 	}
 	if opts.DryRun {
 		mf, err := m.LoadManifest(name)

@@ -35,14 +35,19 @@ Global flags can override these:
 ```bash
 ghpm list
 ghpm status <name>
-ghpm install <name> [--version <v>] [--force]
+ghpm install [pkgs...] [--version <v>] [--force]
 ghpm install --all
 ghpm remove <name> [--purge]
-ghpm upgrade <name>
+ghpm upgrade [pkgs...]
 ghpm upgrade --all [--dry-run]
 ghpm self [--version <v>]
 ghpm version
 ```
+
+With no package arguments, both commands default to `--all`. Install selects all
+available manifests and installs or upgrades them. Upgrade selects only installed
+packages; explicitly naming an uninstalled package is an error.
+`upgrade --dry-run` checks for changes without installing anything.
 
 ## Manifest format
 

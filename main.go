@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"sort"
 
 	"github.com/spf13/cobra"
 
@@ -146,45 +147,43 @@ func main() {
 	var installAll bool
 	var installForce bool
 	installCmd := &cobra.Command{
-		Use:   "install <name>",
-		Short: "Install a package",
-		Args: func(cmd *cobra.Command, args []string) error {
-			if installAll {
-				return nil
-			}
-			return cobra.MinimumNArgs(1)(cmd, args)
-		},
+		Use:   "install [pkgs...]",
+		Short: "Install or upgrade packages (default: all available manifests)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			manager, _, err := buildManager()
 			if err != nil {
 				return err
 			}
-			if installAll {
+			all := installAll || len(args) == 0
+			names := args
+			if all {
 				mfs, err := manager.ListManifests()
 				if err != nil {
 					return err
 				}
+				names = nil
 				for _, mf := range mfs {
-					if _, err := manager.Install(mf.Name, ghpm.InstallOptions{Version: installVersion, Force: installForce}); err != nil {
-						return err
+					names = append(names, mf.Name)
+				}
+			}
+			for _, name := range names {
+				receipt, err := manager.Install(name, ghpm.InstallOptions{Version: installVersion, Force: installForce})
+				if err != nil {
+					return err
+				}
+				if !all {
+					if jsonOut {
+						writeJSON(receipt)
+					} else {
+						fmt.Printf("installed %s %s\n", receipt.Name, receipt.Source.Tag)
 					}
 				}
-				return nil
 			}
-			receipt, err := manager.Install(args[0], ghpm.InstallOptions{Version: installVersion, Force: installForce})
-			if err != nil {
-				return err
-			}
-			if jsonOut {
-				writeJSON(receipt)
-				return nil
-			}
-			fmt.Printf("installed %s %s\n", receipt.Name, receipt.Source.Tag)
 			return nil
 		},
 	}
 	installCmd.Flags().StringVar(&installVersion, "version", "", "version/tag")
-	installCmd.Flags().BoolVar(&installAll, "all", false, "install all")
+	installCmd.Flags().BoolVar(&installAll, "all", false, "install all available manifests")
 	installCmd.Flags().BoolVar(&installForce, "force", false, "overwrite conflicts")
 
 	var removePurge bool
@@ -216,52 +215,47 @@ func main() {
 	var upgradeAll bool
 	var upgradeDryRun bool
 	upgradeCmd := &cobra.Command{
-		Use:   "upgrade <name>",
-		Short: "Upgrade a package",
-		Args: func(cmd *cobra.Command, args []string) error {
-			if upgradeAll {
-				return nil
-			}
-			return cobra.MinimumNArgs(1)(cmd, args)
-		},
+		Use:   "upgrade [pkgs...]",
+		Short: "Upgrade installed packages (default: all installed packages)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			manager, _, err := buildManager()
 			if err != nil {
 				return err
 			}
-			if upgradeAll {
-				mfs, err := manager.ListManifests()
+			all := upgradeAll || len(args) == 0
+			names := args
+			if all {
+				installed, err := state.LoadInstalled(state.InstalledPath(manager.StateDir()))
 				if err != nil {
 					return err
 				}
-				for _, mf := range mfs {
-					changed, _, err := manager.Upgrade(mf.Name, ghpm.InstallOptions{DryRun: upgradeDryRun})
-					if err != nil {
-						return err
-					}
-					if !jsonOut && upgradeDryRun {
-						fmt.Printf("%s\t%s\n", mf.Name, yesNo(changed))
-					}
+				names = nil
+				for name := range installed.Installed {
+					names = append(names, name)
 				}
-				return nil
+				sort.Strings(names)
 			}
-			changed, receipt, err := manager.Upgrade(args[0], ghpm.InstallOptions{DryRun: upgradeDryRun})
-			if err != nil {
-				return err
-			}
-			if jsonOut {
-				writeJSON(map[string]any{"changed": changed, "receipt": receipt})
-				return nil
-			}
-			if changed {
-				fmt.Printf("upgraded %s to %s\n", receipt.Name, receipt.Source.Tag)
-			} else {
-				fmt.Printf("%s already up to date\n", receipt.Name)
+			for _, name := range names {
+				changed, receipt, err := manager.Upgrade(name, ghpm.InstallOptions{DryRun: upgradeDryRun})
+				if err != nil {
+					return err
+				}
+				if all {
+					if !jsonOut && upgradeDryRun {
+						fmt.Printf("%s\t%s\n", name, yesNo(changed))
+					}
+				} else if jsonOut {
+					writeJSON(map[string]any{"changed": changed, "receipt": receipt})
+				} else if changed {
+					fmt.Printf("upgraded %s to %s\n", receipt.Name, receipt.Source.Tag)
+				} else {
+					fmt.Printf("%s already up to date\n", receipt.Name)
+				}
 			}
 			return nil
 		},
 	}
-	upgradeCmd.Flags().BoolVar(&upgradeAll, "all", false, "upgrade all")
+	upgradeCmd.Flags().BoolVar(&upgradeAll, "all", false, "upgrade all installed packages")
 	upgradeCmd.Flags().BoolVar(&upgradeDryRun, "dry-run", false, "check for upgrades")
 
 	var selfVersion string

@@ -81,14 +81,17 @@
 * `ghpm status [name]`
   Show installed receipt, files, and whether they still match hashes on disk.
 
-* `ghpm install <name>|--all [--version <v>] [--force]`
+* `ghpm install [pkgs...] [--all] [--version <v>] [--force]`
+  Install or upgrade named packages; default to all available manifests.
   Resolve version (unless pinned/explicit), fetch, install, write receipt.
 
 * `ghpm remove <name> [--purge]`
   Remove files tracked in receipt.
 
-* `ghpm upgrade <name>|--all [--dry-run]`
-  Resolve latest (or configured channel), compare to installed, upgrade if newer.
+* `ghpm upgrade [pkgs...] [--all] [--dry-run]`
+  Upgrade named installed packages; default to all installed packages.
+  Uninstalled names are errors. Dry runs only check for changes.
+  Resolve latest (or configured channel), compare to installed, upgrade if changed.
 
 ### Global flags
 
